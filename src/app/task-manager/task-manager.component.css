@@ -1,0 +1,21 @@
+.card{
+    box-shadow: 0 0 10px;
+}
+
+.main-div{
+    min-height: 628px;
+}
+.navbar-link{
+    text-decoration: none;
+}
+.navbar-link:hover{
+    color: #fff;
+    text-decoration: underline;
+
+}
+
+nav{
+    position: sticky;
+    top: 0%;
+    z-index: 3;
+}

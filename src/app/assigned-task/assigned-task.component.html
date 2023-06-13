@@ -1,0 +1,80 @@
+<nav class="navbar bg-primary">
+    <div class="container-fluid">
+      <div class="container">
+        <a class="navbar-brand fs-2 fw-bold text-light">Task Management System</a>
+        <div style="float: right;">
+          <!-- <a  class="navbar-link fw-bold text-light  m-5 fs-5" routerLink="../dashboard">Dashboard</a> -->
+        </div>
+  
+      </div>
+    </div>
+  </nav>
+
+  
+
+  <div class="main-div container mt-5">
+    <div class="d-flex justify-content-center align-items-center mt-5" *ngIf="allTasks.length==0">
+        <h1>No one is assigned task for you</h1>
+      </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-10 col-xs-12 " *ngFor="let task of allTasks ">
+          <div class="mt-5" *ngIf="task=='No matches found'">
+            <h1 class="text-center text-danger mt-5">No matches found!</h1>
+          </div>
+          <div *ngIf="task!='No matches found'">
+            <div class="row mb-5" *ngIf="task.status=='pending'">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="fw-bold fs-3">{{task.title}}</h4>
+                  <p class="float-right fw-bold">Due date: {{task.due_date}}</p>
+                  <p class="fw-bold">Assigned By: {{task.fromemail}}</p>
+                  <p>{{task.description}}</p>
+                  <p class="fw-bold text-danger">Status: {{task.status}}</p>
+      
+                  <div class="d-flex justify-content-around mt-2">
+                    <button (click)="markComplete(task.id)" class="btn btn-success fw-bold" *ngIf="task.status=='pending'"><i class="fa-solid fa-check"></i> Mark
+                      Complete</button>
+                    <!-- <button (click)="gettask(task.id)" class="btn btn-primary fw-bold" data-bs-toggle="modal"
+                      data-bs-target="#staticBackdrop" *ngIf="task.status==pending"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                    <button (click)="deletetask(task.id)" class="btn btn-danger fw-bold"><i class="fa-solid fa-trash"></i> Delete</button> -->
+                    <!-- <button class="btn btn-info text-light fw-bold">Assign</button> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-10 col-xs-12 " *ngFor="let task of allTasks">
+          <!-- <div *ngIf="task=='No matches found'">
+            <h1>No matches found</h1>
+          </div> -->
+          <div *ngIf="task!='No matches found'">
+            <div class="row mb-5" *ngIf="task.status!='pending'">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="fw-bold fs-3">{{task.title}}</h4>
+                  <p class="float-right fw-bold">Due date: {{task.due_date}}</p>
+                  <p class="fw-bold">Assigned By: {{task.fromemail}}</p>
+                  <p>{{task.description}}</p>
+                  <p class="fw-bold text-success">Status: {{task.status}}</p>
+      
+                  <!-- <div class="d-flex justify-content-around mt-2">
+                    <button (click)="deletetask(task.id)" class="btn btn-danger fw-bold"><i class="fa-solid fa-trash"></i> Delete</button>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          
+    
+        </div>
+      </div>
+    
+  </div>
+
+
+
+  <app-footer></app-footer>

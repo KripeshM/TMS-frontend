@@ -1,0 +1,48 @@
+<app-header></app-header>
+
+<div class="main-div container my-3">
+    <div class="row">
+        <div class="col-md-6 col-xs-12">
+            <img src="https://img.freepik.com/free-vector/task-management-abstract-concept-illustration_335657-2127.jpg?w=2000"
+                width="100%" height="560px" alt="">
+        </div>
+        <div class="col-md-6 col-xs-12 mt-5">
+            <u>
+                <h1 class="text-center mt-5 fw-bold mb-5">Login</h1>
+            </u>
+            <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+                <div class="mb-3 ">
+                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                    <input name="email" formControlName="email" type="email" class="form-control w-75"
+                        id="exampleInputEmail1">
+                    <div class="text-danger"
+                        *ngIf="this.loginForm.get('email')?.errors&&this.loginForm.get('email')?.touched">Invalid email
+                    </div>
+
+                </div>
+                <div class="mb-3 ">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input name="password" formControlName="password" type="password" class="form-control w-75"
+                        id="exampleInputPassword1">
+                    <div class="text-danger"
+                        *ngIf="this.loginForm.get('password')?.errors&&this.loginForm.get('password')?.touched">Invalid
+                        password</div>
+
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-primary fw-bold" >Login</button>
+                </div>
+                <div class="d-flex">
+                    <p>Don't have an account?</p>&nbsp;&nbsp;&nbsp;
+                    <a class="text-decoration-none fw-bold " routerLink="register">Register</a>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

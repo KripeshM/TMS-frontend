@@ -1,0 +1,247 @@
+<nav class="navbar bg-primary">
+  <div class="container-fluid">
+    <div class="container">
+      <a class="navbar-brand fs-2 fw-bold text-light">Task Management System</a>
+      <div style="float: right;">
+        <a  class="navbar-link fw-bold text-light  fs-5" routerLink="../assigned-task">Assigned Task</a>
+        <a  class="navbar-link fw-bold text-light  m-5 fs-5" routerLink="../dashboard">Dashboard</a>
+        <a (click)="logout()" class="btn btn-danger fw-bold"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<div class="main-div container">
+  <div class="row mb-5">
+    <div class="col-xs-12">
+      <marquee class="fs-5 fw-bold" behavior="alternate" direction="">Welcome {{currentUser}}</marquee>
+    </div>
+    <div class="col-md-8 col-xs-12">
+      <input (keyup)="search($event)" type="text" class="form-control w-75 mt-5" placeholder="Search task here...">
+    </div>
+    <div class="col-md-4 col-xs-12">
+      <button class="btn btn-warning text-light fw-bold mt-5 ms-5" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Add
+         task</button>
+         <button class="btn btn-info text-light fw-bold mt-5 ms-5" data-bs-toggle="modal" data-bs-target="#assigntaskmodal">Assign task</button>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center align-items-center" *ngIf="allTasks.length==0">
+    <h1>Add Your Task Here..</h1>
+  </div>
+
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-10 col-xs-12 " *ngFor="let task of allTasks | filter:searchTerm:['title','status','due_date']">
+      <div class="mt-5" *ngIf="task=='No matches found'">
+        <h1 class="text-center text-danger mt-5">No matches found!</h1>
+      </div>
+      <div *ngIf="task!='No matches found'">
+        <div class="row mb-5" *ngIf="task.status=='pending'">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="fw-bold fs-3">{{task.title}}</h4>
+              <p class="float-right fw-bold">Due date: {{task.due_date}}</p>
+              <p>{{task.description}}</p>
+              <p class="fw-bold text-danger">Status: {{task.status}}</p>
+  
+              <div class="d-flex justify-content-around mt-2">
+                <button (click)="markComplete(task.id)" class="btn btn-success fw-bold" *ngIf="task.status=='pending'"><i class="fa-solid fa-check"></i> Mark
+                  Complete</button>
+                <button (click)="gettask(task.id)" class="btn btn-primary fw-bold" data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrop" *ngIf="task.status=='pending'"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button (click)="deletetask(task.id)" class="btn btn-danger fw-bold"><i class="fa-solid fa-trash"></i> Delete</button>
+                <!-- <button class="btn btn-info text-light fw-bold">Assign</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-10 col-xs-12 " *ngFor="let task of allTasks | filter:searchTerm:['title','status','due_date']">
+      <!-- <div *ngIf="task=='No matches found'">
+        <h1>No matches found</h1>
+      </div> -->
+      <div *ngIf="task!='No matches found'">
+        <div class="row mb-5" *ngIf="task.status!='pending'">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="fw-bold fs-3">{{task.title}}</h4>
+              <p class="float-right fw-bold">Due date: {{task.due_date}}</p>
+              <p>{{task.description}}</p>
+              <p class="fw-bold text-success">Status: {{task.status}}</p>
+  
+              <div class="d-flex justify-content-around mt-2">
+                <button (click)="deletetask(task.id)" class="btn btn-danger fw-bold"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+    </div>
+  </div>
+
+
+</div>
+
+
+<!-- add new task modal -->
+
+<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Task</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="taskForm" (ngSubmit)="addTask()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <input type="number" name="taskid" formControlName="taskid" class="form-control" placeholder="Enter task id"
+              id="taskid">
+            <div class="text-danger" *ngIf="this.taskForm.get('taskid')?.errors&&this.taskForm.get('taskid')?.touched">
+              Invalid id</div>
+          </div>
+          <div class="mb-3">
+            <input type="text" name="taskTitle" formControlName="taskTitle" class="form-control"
+              placeholder="Enter task title" id="tasktitle">
+            <div class="text-danger"
+              *ngIf="this.taskForm.get('taskTitle')?.errors&&this.taskForm.get('taskTitle')?.touched">Invalid title
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="text" name="taskDesc" formControlName="taskDesc" class="form-control"
+              placeholder="Enter task description" id="taskdesc">
+            <div class="text-danger"
+              *ngIf="this.taskForm.get('taskDesc')?.errors&&this.taskForm.get('taskDesc')?.touched">Invalid description
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="date" name="date" formControlName="date" class="form-control" placeholder="Due date"
+              id="due_date">
+            <div class="text-danger" *ngIf="this.taskForm.get('date')?.errors&&this.taskForm.get('date')?.touched">
+              Invalid date</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Add Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- edit task modal -->
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Task</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="editTaskForm" (ngSubmit)="editTask()">
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <input [(ngModel)]="addedTask.title" type="text" name="editedTaskTitle" formControlName="editedTaskTitle"
+              class="form-control" placeholder="Enter task title">
+            <div class="text-danger"
+              *ngIf="this.editTaskForm.get('editedTaskTitle')?.errors&&this.editTaskForm.get('editedTaskTitle')?.touched">Invalid title
+            </div>
+
+          </div>
+          <div class="mb-3">
+            <input [(ngModel)]="addedTask.description" type="text" name="editedTaskDesc" formControlName="editedTaskDesc"
+              class="form-control" placeholder="Enter task description">
+            <div class="text-danger"
+              *ngIf="this.editTaskForm.get('editedTaskDesc')?.errors&&this.editTaskForm.get('editedTaskDesc')?.touched">Invalid description
+            </div>
+          </div>
+          <div class="mb-3">
+            <input [(ngModel)]="addedTask.due_date" type="date" name="editedDate" formControlName="editedDate" class="form-control">
+            <div class="text-danger" *ngIf="this.editTaskForm.get('editedDate')?.errors&&this.editTaskForm.get('editedDate')?.touched">
+              Invalid date</div>
+
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit"  class="btn btn-primary" data-bs-dismiss="modal">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Assign task modal -->
+
+<div class="modal fade" id="assigntaskmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Task</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="assignTaskForm" (ngSubmit)="assigntask()" >
+        <div class="modal-body">
+          <div class="mb-3">
+            <input type="number" name="taskid" formControlName="taskid" class="form-control" placeholder="Enter task id"
+              id="taskid">
+            <div class="text-danger" *ngIf="this.assignTaskForm.get('taskid')?.errors&&this.assignTaskForm.get('taskid')?.touched">
+              Invalid id</div>
+          </div>
+          <div class="mb-3">
+            <input type="email" name="recieveremail" formControlName="recieveremail" class="form-control" placeholder="Enter receiver email ">
+            <div class="text-danger" *ngIf="this.assignTaskForm.get('recieveremail')?.errors&&this.assignTaskForm.get('recieveremail')?.touched">
+              Invalid email</div>
+          </div>
+          <div class="mb-3">
+            <input type="text" name="taskTitle" formControlName="taskTitle" class="form-control"
+              placeholder="Enter task title" id="tasktitle">
+            <div class="text-danger"
+              *ngIf="this.assignTaskForm.get('taskTitle')?.errors&&this.assignTaskForm.get('taskTitle')?.touched">Invalid title
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="text" name="taskDesc" formControlName="taskDesc" class="form-control"
+              placeholder="Enter task description" id="taskdesc">
+            <div class="text-danger"
+              *ngIf="this.assignTaskForm.get('taskDesc')?.errors&&this.assignTaskForm.get('taskDesc')?.touched">Invalid description
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="date" name="date" formControlName="date" class="form-control" placeholder="Due date"
+              id="due_date">
+            <div class="text-danger" *ngIf="this.assignTaskForm.get('date')?.errors&&this.assignTaskForm.get('date')?.touched">
+              Invalid date</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Assign Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<app-footer></app-footer>
